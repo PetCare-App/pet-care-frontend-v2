@@ -29,7 +29,7 @@ const Circle = styled(Box)<Props>`
 
 const Wrapper = styled(Container)<Props>`
 	${({ theme }) => css`
-		background-color: #e4c9e5;
+		background-color: #48b281;
 		height: 100vh;
 		width: 100vw;
 		display: grid;

@@ -148,7 +148,7 @@ export function ProviderContext({ children }: any) {
 	const updateUser = async (userData: any) => {
 		try {
 			delete userData.password;
-			delete userData.pets;
+			delete userData.patients;
 			const response = await updateUserService(userData);
 			setSnackbarOpen({
 				status: true,
