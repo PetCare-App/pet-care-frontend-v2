@@ -172,7 +172,7 @@ export function ProviderContext({ children }: any) {
 			const data = [];
 			for await (let id of petIds) {
 				const response = await getHigienesService(id);
-				data.push(...response.data);
+				data.push(...response.data.hygiene);
 			}
 			setHigienes(data);
 		} catch (error) {

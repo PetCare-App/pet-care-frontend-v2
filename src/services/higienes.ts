@@ -13,5 +13,5 @@ export const deleteHigieneService = async (id: any) => {
 };
 
 export const getHigienesService = async (id: number) => {
-	return await api.get(`/hygiene/pet/${id}`);
+	return await api.get(`/patients/${id}`);
 };

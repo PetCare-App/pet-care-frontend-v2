@@ -23,29 +23,23 @@ import { Pet } from '../../types/pets';
 import { FilterByPet } from '../../components/FilterByPet';
 
 interface DashboardProps {
-	handleOpenCreateForm: () => void;
-	handleOpenEditForm: (higiene: Higiene) => void;
-	handleOpenDeleteConfirmation: (higiene: Higiene) => void;
 }
 
 export const Dashboard = ({
-	handleOpenCreateForm,
-	handleOpenEditForm,
-	handleOpenDeleteConfirmation,
 }: DashboardProps) => {
-	const { higienes, getHigienes, pets, snackbarOpen } = usePetCareContext();
+	const { higienes, getHigienes, user, snackbarOpen } = usePetCareContext();
 
 	const [loading, setLoading] = useState(false);
 
 	const fetchData = async () => {
 		setLoading(true);
-		await getHigienes(pets.map((pet: Pet) => pet.id));
+		await getHigienes(user.patients.map((pet: Pet) => pet.id));
 		setLoading(false);
 	};
 
 	const handleFilter = async (filter: number) => {
 		setLoading(true);
-		await getHigienes(filter !== 0 ? [filter] : pets.map((pet: Pet) => pet.id));
+		await getHigienes(filter !== 0 ? [filter] : user.patients.map((pet: Pet) => pet.id));
 		setLoading(false);
 	};
 
@@ -64,9 +58,6 @@ export const Dashboard = ({
 				}}
 			>
 				<FilterByPet handleFilter={handleFilter} />
-				<IconButton onClick={handleOpenCreateForm}>
-					<AddIcon sx={{ fontSize: '30px' }} />
-				</IconButton>
 			</Box>
 			<Container
 				sx={{
@@ -78,7 +69,7 @@ export const Dashboard = ({
 			>
 				{!!higienes.length && !loading ? (
 					higienes.map((higiene: Higiene) => {
-						const pet = pets.find((pet: any) => pet.id === higiene.petId);
+						const pet = user.patients.find((pet: any) => pet.id === higiene.patientId);
 						return (
 							<Card
 								variant='outlined'
@@ -118,7 +109,7 @@ export const Dashboard = ({
 											variant='h3'
 											gutterBottom
 										>
-											{higiene?.name}
+											{higiene?.notes}
 										</Typography>
 									</Stack>
 									<Stack
@@ -131,32 +122,16 @@ export const Dashboard = ({
 											sx={{ fontSize: 15 }}
 											color='text.primary'
 										>
-											{`Data: ${dateFormat(higiene.date)}`}
+											{`Data: ${dateFormat(higiene.serviceDate)}`}
 										</Typography>
 									</Stack>
 								</CardContent>
-								<CardActions
-									sx={{
-										display: 'flex',
-										flexDirection: 'row',
-										justifyContent: 'space-evenly',
-										padding: '0px',
-									}}
-								>
-									<IconButton
-										onClick={() => handleOpenDeleteConfirmation(higiene)}
-									>
-										<DeleteIcon sx={{ fontSize: '25px' }} />
-									</IconButton>
-									<IconButton onClick={() => handleOpenEditForm(higiene)}>
-										<EditIcon sx={{ fontSize: '25px' }} />
-									</IconButton>
-								</CardActions>
+							
 							</Card>
 						);
 					})
 				) : !higienes.length && !loading ? (
-					<StartHere title={'Comece adicionando seu registro de higiene!'} />
+					<StartHere title={'Não existem registros de higiene!'} />
 				) : (
 					<CircularProgress color='secondary' />
 				)}

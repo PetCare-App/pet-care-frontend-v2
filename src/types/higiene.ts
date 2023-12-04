@@ -1,6 +1,6 @@
 export interface Higiene {
-  id: string;
-  name: string;
-  date: string;
-  petId: number;
+  id?: number;
+  serviceDate: string;
+  notes?: string;
+  patientId: number;
 }
