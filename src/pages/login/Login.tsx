@@ -60,6 +60,7 @@ export const Login = () => {
 					email: decodedToken.email,
 					id: decodedToken.sub,
 					fullname: decodedToken.fullname,
+					patients: []
 				});
 				navigate('/pets');
 			});

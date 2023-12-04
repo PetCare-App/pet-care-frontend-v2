@@ -131,7 +131,7 @@ export const Form = ({}: FormProps) => {
 				
         <FormLabel>Data de Nascimento</FormLabel>
         <Input
-					sx={{ width: '220px' }}
+					sx={{ width: '210px' }}
 					type='date'
 					value={user.dateOfBirth?.split('T')[0]}
 					slotProps={{

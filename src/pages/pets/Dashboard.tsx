@@ -34,15 +34,13 @@ export const Dashboard = ({
 	handleOpenEditForm,
 	handleOpenDeleteConfirmation,
 }: DashboardProps) => {
-	const { pets, getPets, snackbarOpen, getUser, user } = usePetCareContext();
+	const { snackbarOpen, getUser, user } = usePetCareContext();
 
 	const [loading, setLoading] = useState(false);
 
 	const fetchData = async () => {
 		setLoading(true);
 		await getUser();
-		// if(user.patients)
-		// await getPets();
 		setLoading(false);
 	};
 
