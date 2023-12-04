@@ -35,7 +35,7 @@ export const PetCareContext = createContext({} as any);
 
 export function ProviderContext({ children }: any) {
 	const [pets, setPets] = useState<any[]>([]);
-	const [user, setUser] = useState<User>({ email: '', id: 5, fullname: '' });
+	const [user, setUser] = useState<any>({ email: '', id: 1, fullname: '', patients: [] });
 	const [higienes, setHigienes] = useState<Higiene[]>([]);
 	const [controleParasitarios, setControleParasitarios] = useState<
 		ControleParasitario[]
@@ -52,9 +52,11 @@ export function ProviderContext({ children }: any) {
 		message: '',
 	});
 
+
+	//PETS
 	const getPets = async () => {
 		try {
-			const response = await getPetsService(user.id);
+			const response = await getPetsService(user.patients.id);
 			setPets(response.data.pets);
 			// setPets([]);
 		} catch (error) {
@@ -122,6 +124,7 @@ export function ProviderContext({ children }: any) {
 		}
 	};
 
+	//USER
 	const getUser = async () => {
 		try {
 			const response = await getUserService(user.id);
@@ -152,6 +155,7 @@ export function ProviderContext({ children }: any) {
 		}
 	};
 
+	//HIGIENES
 	const getHigienes = async (petIds: number[]) => {
 		try {
 			const data = [];
@@ -226,6 +230,7 @@ export function ProviderContext({ children }: any) {
 		}
 	};
 
+	//CONTROLE PARASITARIOS
 	const getControleParasitarios = async (petIds: number[]) => {
 		try {
 			const data = [];
@@ -302,6 +307,7 @@ export function ProviderContext({ children }: any) {
 		}
 	};
 
+	//VACINAS
 	const getVaccines = async (petIds: number[]) => {
 		try {
 			const data = [];
@@ -375,6 +381,8 @@ export function ProviderContext({ children }: any) {
 			throw error;
 		}
 	};
+
+
 
 	const getPetPdf = async (petData: Pet) => {
 		try {

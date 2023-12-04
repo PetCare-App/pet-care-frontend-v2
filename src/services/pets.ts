@@ -5,15 +5,16 @@ export const createPetService = async (petData: any) => {
 };
 
 export const updatePetService = async (petData: any) => {
-	return await api.patch(`/pets/${petData.id}`, { ...petData });
+	console.log('petData', petData);
+	return await api.patch(`/patients/${petData.id}`, { ...petData });
 };
 
 export const deletePetService = async (id: any) => {
-	return await api.delete(`/pets/${id}`);
+	return await api.delete(`/patients/${id}`);
 };
 
 export const getPetsService = async (userId: number) => {
-	return await api.get(`/users/${userId}`);
+	return await api.get(`/owners/${userId}`);
 };
 
 export const getPetPdfService = async (petId: string) => {

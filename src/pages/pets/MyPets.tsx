@@ -17,31 +17,21 @@ import { Pet } from '../../types/pets';
 
 export const MyPets = () => {
 	const navigate = useNavigate();
-	const { getPets, deletePet, getPetPdf } = usePetCareContext();
+	const { getPets, getUser, deletePet, getPetPdf } = usePetCareContext();
 
 	const [isFormOpen, setOpenForm] = useState(false);
-	const [isCreate, setCreate] = useState(false);
 	const [isDeleteConfirmation, setDeleteConfirmation] = useState(false);
 
 	const [pet, setPet] = useState({} as Pet);
 
 	useEffect(() => {
-		!!isFormOpen && !!isCreate
-			? navigate('/pets/create')
-			: !!isFormOpen && !isCreate
+		!!isFormOpen 
 			? navigate('/pets/edit')
 			: navigate('/pets/dashboard');
 	}, [isFormOpen]);
 
-	const handleOpenCreateForm = () => {
-		setPet({} as Pet);
-		setOpenForm(true);
-		setCreate(true);
-	};
-
 	const handleOpenEditForm = (pet: Pet) => {
 		setOpenForm(true);
-		setCreate(false);
 		setPet(pet);
 	};
 
@@ -50,35 +40,27 @@ export const MyPets = () => {
 		setPet(pet);
 	};
 
-	const handlePdf = (pet: Pet) => {
-		getPetPdf(pet);
-	};
-
 	const handleReturnButton = () => {
 		setPet({} as Pet);
 		setOpenForm(false);
-		setCreate(false);
 	};
 
 	const handleDeletePetButton = async (id: string) => {
 		await deletePet(id);
 		setDeleteConfirmation(false);
 		setPet({} as Pet);
-		getPets();
+		getUser();
 	};
 
 	return (
 		<Container sx={{ display: 'flex', flexDirection: 'column' }}>
 			{!isFormOpen ? (
 				<Dashboard
-					handlePdf={handlePdf}
-					handleOpenCreateForm={handleOpenCreateForm}
 					handleOpenEditForm={handleOpenEditForm}
 					handleOpenDeleteConfirmation={handleOpenDeleteConfirmation}
 				/>
 			) : (
 				<Form
-					isCreate={isCreate}
 					handleReturnButton={handleReturnButton}
 					currentPet={pet}
 				></Form>

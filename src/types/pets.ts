@@ -2,9 +2,16 @@ export interface Pet {
 	id: string;
 	name: string;
 	breed: string;
-	animalType: string | null;
-	gender: string;
+	species: string | null;
+	dateOfBirth: string;
+	sex: string;
 	weight?: number | string;
 	birthDate: string;
-	userId: number;
+	allergies: string;
+	medications: string;
+	emergencyContact: string;
+	photoUrl: string;
+	currentStatus: string;
+	additionalNotes: string;
+	ownerId: number;
 }

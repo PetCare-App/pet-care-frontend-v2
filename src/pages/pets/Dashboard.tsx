@@ -26,25 +26,23 @@ import { StartHere } from '../../components/startHere';
 import SnackbarComponent from '../../components/snackbar/Snackbar';
 
 interface DashboardProps {
-	handleOpenCreateForm: () => void;
 	handleOpenEditForm: (pet: Pet) => void;
 	handleOpenDeleteConfirmation: (pet: Pet) => void;
-	handlePdf: (pet: Pet) => void;
 }
 
 export const Dashboard = ({
-	handlePdf,
-	handleOpenCreateForm,
 	handleOpenEditForm,
 	handleOpenDeleteConfirmation,
 }: DashboardProps) => {
-	const { pets, getPets, snackbarOpen } = usePetCareContext();
+	const { pets, getPets, snackbarOpen, getUser, user } = usePetCareContext();
 
 	const [loading, setLoading] = useState(false);
 
 	const fetchData = async () => {
 		setLoading(true);
-		await getPets();
+		await getUser();
+		// if(user.patients)
+		// await getPets();
 		setLoading(false);
 	};
 
@@ -71,9 +69,6 @@ export const Dashboard = ({
 					padding: '40px 0px',
 				}}
 			>
-				<IconButton onClick={handleOpenCreateForm}>
-					<AddIcon sx={{ fontSize: '30px' }} />
-				</IconButton>
 			</Box>
 			<Container
 				sx={{
@@ -83,8 +78,8 @@ export const Dashboard = ({
 					alignItems: 'center',
 				}}
 			>
-				{!!pets.length && !loading ? (
-					pets.map((pet: Pet) => {
+				{!!user.patients.length && !loading ? (
+					user.patients.map((pet: Pet) => {
 						return (
 							<Card
 								variant='outlined'
@@ -104,9 +99,9 @@ export const Dashboard = ({
 									>
 										<Avatar
 											src={
-												pet?.animalType == 'Cat'
+												pet?.species == 'Cat'
 													? Cat
-													: pet?.animalType == 'Dog'
+													: pet?.species == 'Dog'
 													? Dog
 													: Paw
 											}
@@ -137,13 +132,13 @@ export const Dashboard = ({
 											sx={{ fontSize: 15 }}
 											color='text.primary'
 										>
-											{`Aniversário: ${dateFormat(pet?.birthDate)}`}
+											{`Aniversário: ${dateFormat(pet?.dateOfBirth)}`}
 										</Typography>
 										<Typography
 											sx={{ fontSize: 15 }}
 											color='text.primary'
 										>
-											{`Gênero: ${pet?.gender}`}
+											{`Gênero: ${pet?.sex}`}
 										</Typography>
 										<Typography
 											sx={{ fontSize: 15 }}
@@ -166,9 +161,6 @@ export const Dashboard = ({
 									</IconButton>
 									<IconButton onClick={() => handleOpenEditForm(pet)}>
 										<EditIcon sx={{ fontSize: '25px' }} />
-									</IconButton>
-									<IconButton onClick={() => handlePdf(pet)}>
-										<PictureAsPdfIcon sx={{ fontSize: '25px' }} />
 									</IconButton>
 									<PetCertificate pet={pet} />
 								</CardActions>

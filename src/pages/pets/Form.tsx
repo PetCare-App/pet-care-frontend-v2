@@ -37,13 +37,11 @@ const schema = yup.object().shape({
 });
 
 interface FormProps {
-	isCreate: boolean;
 	handleReturnButton: () => void;
 	currentPet: Pet;
 }
 
 export const Form = ({
-	isCreate,
 	handleReturnButton,
 	currentPet,
 }: FormProps) => {
@@ -62,14 +60,6 @@ export const Form = ({
 
 	const handleCloseSnackbar = () => {
 		setErrorMessage(false);
-	};
-
-	const submitCreate = async (data: Pet) => {
-		const response = await createPet(data);
-
-		if (response?.status == 201) {
-			handleReturnButton();
-		}
 	};
 
 	const submitEdit = async (data: Pet) => {
@@ -103,13 +93,13 @@ export const Form = ({
 					}}
 				>
 					<Typography variant='h5'>
-						{!!isCreate ? 'Adicione um pet' : 'Edite seu pet'}
+						Edite seu pet
 					</Typography>
 					<Avatar
 						src={
-							pet?.animalType == 'Cat'
+							pet?.species == 'Cat'
 								? Cat
-								: pet?.animalType == 'Dog'
+								: pet?.species == 'Dog'
 								? Dog
 								: Paw
 						}
@@ -133,31 +123,31 @@ export const Form = ({
 							/>
 						</FormControl>
 						<FormControl>
-							<FormLabel>Tipo</FormLabel>
+							<FormLabel>Espécie</FormLabel>
 							<Select
-								placeholder='Escolha o tipo do seu pet'
-								value={pet.animalType}
+								placeholder='Escolha a espécie do seu pet'
+								value={pet.species}
 								onChange={(_, newValue) =>
-									setPet({ ...pet, animalType: newValue })
+									setPet({ ...pet, species: newValue })
 								}
 								sx={{ width: '250px' }}
 							>
-								<Option value='Cat'>Gato</Option>
-								<Option value='Dog'>Cachorro</Option>
+								<Option value='cat'>Gato</Option>
+								<Option value='dog'>Cachorro</Option>
 							</Select>
 						</FormControl>
 						<FormControl>
 							<FormLabel>Aniversário</FormLabel>
 							<Input
 								type='date'
-								value={pet.birthDate?.split('T')[0]}
+								value={pet.dateOfBirth?.split('T')[0]}
 								slotProps={{
 									input: {
 										min: '2018-06-07T00:00',
 										max: '2018-06-14T00:00',
 									},
 								}}
-								onChange={(e) => setPet({ ...pet, birthDate: e.target.value })}
+								onChange={(e) => setPet({ ...pet, dateOfBirth: e.target.value })}
 							/>
 						</FormControl>
 						<FormControl>
@@ -180,9 +170,9 @@ export const Form = ({
 						<FormControl>
 							<FormLabel>Gênero</FormLabel>
 							<Input
-								{...register('gender')}
-								value={pet.gender}
-								onChange={(e) => setPet({ ...pet, gender: e.target.value })}
+								{...register('sex')}
+								value={pet.sex == 'male' ? 'Macho' : 'Fêmea'}
+								onChange={(e) => setPet({ ...pet, sex: e.target.value })}
 							/>
 						</FormControl>
 					</Stack>
@@ -191,7 +181,7 @@ export const Form = ({
 							color='neutral'
 							variant='soft'
 							onClick={() => {
-								isCreate ? submitCreate(pet) : submitEdit(pet);
+								submitEdit(pet);
 							}}
 							sx={{ width: '80px', marginBottom: '20px' }}
 						>
