@@ -1,6 +1,6 @@
 export interface ControleParasitario {
-  id: string;
-  name: string;
-  date: string;
-  petId: number;
+  id?: number;
+  controlDate: string;
+  controlType: string;
+  patientId: number;
 }

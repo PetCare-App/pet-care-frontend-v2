@@ -247,7 +247,7 @@ export function ProviderContext({ children }: any) {
 			const data = [];
 			for await (let id of petIds) {
 				const response = await getControleParasitariosService(id);
-				data.push(...response.data);
+				data.push(...response.data.parasiteControl);
 			}
 			setControleParasitarios(data);
 		} catch (error) {

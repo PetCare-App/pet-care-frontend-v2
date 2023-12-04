@@ -19,5 +19,5 @@ export const deleteControleParasitarioService = async (id: any) => {
 };
 
 export const getControleParasitariosService = async (id: number) => {
-	return await api.get(`/parasite-control/pet/${id}`);
+	return await api.get(`/patients/${id}`);
 };
