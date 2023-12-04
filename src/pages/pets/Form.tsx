@@ -54,7 +54,7 @@ export const Form = ({
 		resolver: yupResolver(schema),
 	});
 	const theme = useTheme();
-	const { createPet, updatePet, errorMessage, setErrorMessage } =
+	const { updatePet, errorMessage, setErrorMessage } =
 		usePetCareContext();
 	const [pet, setPet] = useState<Pet>(currentPet);
 

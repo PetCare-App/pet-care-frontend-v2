@@ -132,14 +132,14 @@ const PetCertificate: React.FC<PetProps> = ({ pet }) => {
 							<Typography variant='body1'>
 								Tipo:
 								<span style={{ fontWeight: 700 }}>
-									{pet?.animalType == 'Cat' ? 'Gato' : 'Cachorro'}
+									{pet?.species == 'cat' ? 'Gato' : 'Cachorro'}
 								</span>
 							</Typography>
 							<Typography variant='body1'>
 								Raça: <span style={{ fontWeight: 700 }}>{pet?.breed} </span>
 							</Typography>
 							<Typography variant='body1'>
-								Gênero: <span style={{ fontWeight: 700 }}>{pet?.gender} </span>
+								Gênero: <span style={{ fontWeight: 700 }}>{pet?.sex} </span>
 							</Typography>
 							<Typography variant='body1'>
 								Peso: <span style={{ fontWeight: 700 }}>{pet?.weight} kg </span>
@@ -147,7 +147,7 @@ const PetCertificate: React.FC<PetProps> = ({ pet }) => {
 							<Typography variant='body1'>
 								Data de nascimento:
 								<span style={{ fontWeight: 700 }}>
-									{dateFormat(pet.birthDate)}
+									{dateFormat(pet.dateOfBirth)}
 								</span>
 							</Typography>
 						</Box>

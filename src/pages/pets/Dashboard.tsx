@@ -167,7 +167,7 @@ export const Dashboard = ({
 							</Card>
 						);
 					})
-				) : !pets.length && !loading ? (
+				) : !user.patients.length && !loading ? (
 					<StartHere title={'Comece adicionando seu pet!'} />
 				) : (
 					<CircularProgress color='secondary' />

@@ -1,6 +1,7 @@
 export interface Vaccine {
-	id: string;
-	name: string;
-	date: string;
-	petId: number;
+  id?: number;
+  name: string;
+  dateAdministered: string;
+  notes?: string;
+  patientId?: string;
 }

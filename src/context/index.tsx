@@ -3,6 +3,7 @@ import { Pet } from '../types/pets';
 import {
 	createPetService,
 	deletePetService,
+	getPetByIdService,
 	getPetPdfService,
 	getPetsService,
 	updatePetService,
@@ -57,6 +58,16 @@ export function ProviderContext({ children }: any) {
 	const getPets = async () => {
 		try {
 			const response = await getPetsService(user.patients.id);
+			setPets(response.data.pets);
+			// setPets([]);
+		} catch (error) {
+			throw error;
+		}
+	};
+
+		const getPetById = async (id: any) => {
+		try {
+			const response = await getPetByIdService(id);
 			setPets(response.data.pets);
 			// setPets([]);
 		} catch (error) {
@@ -313,7 +324,7 @@ export function ProviderContext({ children }: any) {
 			const data = [];
 			for await (let id of petIds) {
 				const response = await getVaccinesService(id);
-				data.push(...response.data);
+				data.push(...response.data.vaccines);
 			}
 			setVaccines(data);
 		} catch (error) {
@@ -432,6 +443,7 @@ export function ProviderContext({ children }: any) {
 		createVaccine,
 		updateVaccine,
 		deleteVaccine,
+		getPetById
 	};
 
 	return (

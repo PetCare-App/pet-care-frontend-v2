@@ -17,7 +17,7 @@ export const FilterByPet = ({
 }: {
 	handleFilter: (filter: number) => void;
 }) => {
-	const { pets } = usePetCareContext();
+	const { user } = usePetCareContext();
 	const [filter, setFilter] = useState(0);
 
 	return (
@@ -42,7 +42,7 @@ export const FilterByPet = ({
 					>
 						<ListItemText primary={'Todos'} />
 					</MenuItem>
-					{pets.map((pet: Pet) => {
+					{user.patients.map((pet: Pet) => {
 						return (
 							<MenuItem
 								key={pet.id}
