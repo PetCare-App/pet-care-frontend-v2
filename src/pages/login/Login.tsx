@@ -113,12 +113,6 @@ export const Login = () => {
 						>
 							Login
 						</Button>
-						<LabelSignup>
-							Não tem uma conta?
-							<Strong>
-								<Link to='/signup'>&nbsp;Registre-se</Link>
-							</Strong>
-						</LabelSignup>
 					</Form>
 				</Content>
 			</Container>
