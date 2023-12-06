@@ -1,11 +1,8 @@
 import styled from '@emotion/styled';
 import {
 	Box,
-	Divider,
-	List,
 	ListItem,
 	ListItemButton,
-	MenuItem,
 } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import LogoImage from './../../assets/logo.png';
@@ -13,7 +10,6 @@ import { MenuProps } from './types';
 import PersonIcon from '@mui/icons-material/Person';
 import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { border } from '@mui/system';
 
 const Menu = styled(Box)`
 	display: flex;
@@ -40,13 +36,16 @@ export const DesktopMenu = ({ content, setContent }: MenuProps) => {
 				<ListItemButton onClick={() => setContent(1)}>Meus Pets</ListItemButton>
 			</ListItem>
 			<ListItem>
-				<ListItemButton onClick={() => setContent(2)}>Vacinas</ListItemButton>
+				<ListItemButton onClick={() => setContent(2)}>Prontuários</ListItemButton>
 			</ListItem>
 			<ListItem>
-				<ListItemButton onClick={() => setContent(3)}>Higiene</ListItemButton>
+				<ListItemButton onClick={() => setContent(3)}>Vacinas</ListItemButton>
 			</ListItem>
 			<ListItem>
-				<ListItemButton onClick={() => setContent(4)}>
+				<ListItemButton onClick={() => setContent(4)}>Higiene</ListItemButton>
+			</ListItem>
+			<ListItem>
+				<ListItemButton onClick={() => setContent(5)}>
 					Controle Parasitário
 				</ListItemButton>
 			</ListItem>
@@ -56,7 +55,6 @@ export const DesktopMenu = ({ content, setContent }: MenuProps) => {
 					component={Link}
 					to='/login'
 				>
-					{' '}
 					<IconButton
 						color='inherit'
 						aria-label='Logout'

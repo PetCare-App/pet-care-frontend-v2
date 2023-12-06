@@ -3,6 +3,7 @@ import { Pet } from '../types/pets';
 import {
 	createPetService,
 	deletePetService,
+	getChartsService,
 	getPetByIdService,
 	getPetPdfService,
 	getPetsService,
@@ -31,6 +32,7 @@ import {
 	getVaccinesService,
 	updateVaccineService,
 } from '../services/vaccinesService';
+import { Charts } from '../types/charts';
 
 export const PetCareContext = createContext({} as any);
 
@@ -42,6 +44,7 @@ export function ProviderContext({ children }: any) {
 		ControleParasitario[]
 	>([]);
 	const [vaccines, setVaccines] = useState<Vaccine[]>([]);
+	const [charts, setCharts] = useState<Charts[]>([]);
 
 	const [snackbarOpen, setSnackbarOpen] = useState<{
 		status: boolean;
@@ -393,6 +396,19 @@ export function ProviderContext({ children }: any) {
 		}
 	};
 
+	// PRONTURÁRIOS
+		const getCharts = async (petIds: number[]) => {
+		try {
+			const data = [];
+			for await (let id of petIds) {
+				const response = await getChartsService(id);
+				data.push(...response.data.patientMedicalRecord);
+			}
+			setCharts(data);
+		} catch (error) {
+			throw error;
+		}
+	};
 
 
 	const getPetPdf = async (petData: Pet) => {
@@ -417,6 +433,7 @@ export function ProviderContext({ children }: any) {
 		controleParasitarios,
 		snackbarOpen,
 		vaccines,
+		charts
 	};
 
 	const actions = {
@@ -443,7 +460,8 @@ export function ProviderContext({ children }: any) {
 		createVaccine,
 		updateVaccine,
 		deleteVaccine,
-		getPetById
+		getPetById, 
+		getCharts
 	};
 
 	return (

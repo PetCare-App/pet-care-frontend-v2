@@ -24,6 +24,7 @@ import { PetsVaccine } from './vaccines/Vaccines';
 import { Link } from 'react-router-dom';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PersonIcon from '@mui/icons-material/Person';
+import { PetsCharts } from './charts/Charts';
 
 const Logo = styled('img')`
 	height: 60px;
@@ -59,9 +60,10 @@ function App() {
 
 	useEffect(() => {
 		if (content == 1) navigate('/pets');
-		if (content == 2) navigate('/vacinas');
-		if (content == 3) navigate('/higiene');
-		if (content == 4) navigate('/controle-parasitario');
+		if (content == 2) navigate('/prontuarios');
+		if (content == 3) navigate('/vacinas');
+		if (content == 4) navigate('/higiene');
+		if (content == 5) navigate('/controle-parasitario');
 		if (content == 6) navigate('/usuario/edit');
 	}, [content]);
 
@@ -129,7 +131,7 @@ function App() {
 											setMenuOpen(false);
 										}}
 									>
-										Vacinas
+										Prontuários
 									</MenuItem>
 									<MenuItem
 										onClick={() => {
@@ -137,11 +139,19 @@ function App() {
 											setMenuOpen(false);
 										}}
 									>
-										Higiene
+										Vacinas
 									</MenuItem>
 									<MenuItem
 										onClick={() => {
 											setContent(4);
+											setMenuOpen(false);
+										}}
+									>
+										Higiene
+									</MenuItem>
+									<MenuItem
+										onClick={() => {
+											setContent(5);
 											setMenuOpen(false);
 										}}
 									>
@@ -178,10 +188,12 @@ function App() {
 					{content == 1 ? (
 						<MyPets />
 					) : content == 2 ? (
-						<PetsVaccine />
+						<PetsCharts />
 					) : content == 3 ? (
-						<PetsHigiene />
+						<PetsVaccine />
 					) : content == 4 ? (
+						<PetsHigiene />
+					) : content == 5 ? (
 						<PetsControleParasitario />
 					) : content == 6 ? (
 						<Users />

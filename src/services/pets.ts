@@ -28,3 +28,7 @@ export const getPetPdfService = async (petId: string) => {
 		responseType: 'blob',
 	});
 };
+
+export const getChartsService = async (id: number) => {
+	return await api.get(`/patients/${id}`);
+}
