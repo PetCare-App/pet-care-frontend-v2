@@ -25,6 +25,7 @@ import { Link } from 'react-router-dom';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PersonIcon from '@mui/icons-material/Person';
 import { PetsCharts } from './charts/Charts';
+import { Chat } from './chat/Chat';
 
 const Logo = styled('img')`
 	height: 60px;
@@ -64,7 +65,8 @@ function App() {
 		if (content == 3) navigate('/vacinas');
 		if (content == 4) navigate('/higiene');
 		if (content == 5) navigate('/controle-parasitario');
-		if (content == 6) navigate('/usuario/edit');
+		if (content == 6) navigate('/chat');
+		if (content == 7) navigate('/usuario/edit');
 	}, [content]);
 
 	useEffect(() => {
@@ -157,6 +159,14 @@ function App() {
 									>
 										Controle parasitário
 									</MenuItem>
+									<MenuItem
+										onClick={() => {
+											setContent(6);
+											setMenuOpen(false);
+										}}
+									>
+										Chat
+									</MenuItem>
 									<MenuItem>
 									<ListItemButton
 									style={{ display: 'flex', justifyContent: 'center' }}
@@ -174,7 +184,7 @@ function App() {
 									<ListItem>
 									<ListItemButton
 										style={{ display: 'flex', justifyContent: 'center' }}
-										onClick={() => {setContent(6);
+										onClick={() => {setContent(7);
 														setMenuOpen(false);}}
 									>
 										<PersonIcon fontSize='large' />
@@ -196,6 +206,8 @@ function App() {
 					) : content == 5 ? (
 						<PetsControleParasitario />
 					) : content == 6 ? (
+						<Chat />
+					) : content == 7 ? (
 						<Users />
 					) : (
 						<div> Página {content} ainda em construção</div>

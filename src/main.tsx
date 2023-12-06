@@ -83,8 +83,12 @@ const router = createBrowserRouter([
 		path: '/vacinas/edit',
 		element: <App />,
 	},
-		{
+	{
 		path: '/prontuarios',
+		element: <App />,
+	},
+	{
+		path: '/chat',
 		element: <App />,
 	},
 ]);

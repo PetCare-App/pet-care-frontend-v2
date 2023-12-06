@@ -49,6 +49,11 @@ export const DesktopMenu = ({ content, setContent }: MenuProps) => {
 					Controle Parasitário
 				</ListItemButton>
 			</ListItem>
+			<ListItem>
+				<ListItemButton onClick={() => setContent(6)}>
+					Chat				
+				</ListItemButton>
+			</ListItem>
 			<ListItem style={{ position: 'absolute', bottom: '0px' }}>
 				<ListItemButton
 					style={{ display: 'flex', justifyContent: 'center' }}
@@ -65,7 +70,7 @@ export const DesktopMenu = ({ content, setContent }: MenuProps) => {
 				<ListItem>
 					<ListItemButton
 						style={{ display: 'flex', justifyContent: 'center' }}
-						onClick={() => setContent(6)}
+						onClick={() => setContent(7)}
 					>
 						<PersonIcon
 							fontSize='large'
