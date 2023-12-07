@@ -22,7 +22,6 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Paw from './../../assets/paw.png';
 import Dog from './../../assets/dog.png';
 import Cat from './../../assets/cat.png';
-import PetCertificate from '../../components/petCertificate/PetCertificate';
 import { StartHere } from '../../components/startHere';
 import SnackbarComponent from '../../components/snackbar/Snackbar';
 import { Download } from '@mui/icons-material';
