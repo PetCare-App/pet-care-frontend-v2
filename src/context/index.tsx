@@ -1,36 +1,36 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Pet } from '../types/pets';
+import { Pet, petInit } from '../types/pets';
 import {
-    createPetService,
-    deletePetService,
-    getChartsService,
-    getPetByIdService,
-    getPetPdfService,
-    getPetsService,
-    updatePetService,
+  createPetService,
+  deletePetService,
+  getChartsService,
+  getPetByIdService,
+  getPetPdfService,
+  getPetsService,
+  updatePetService,
 } from '../services/pets';
 import { User } from '../types/users';
 import { getUserService, updateUserService } from '../services/users';
 import {
-    createHigieneService,
-    deleteHigieneService,
-    getHigienesService,
-    updateHigieneService,
+  createHigieneService,
+  deleteHigieneService,
+  getHigienesService,
+  updateHigieneService,
 } from '../services/higienes';
 import { Higiene } from '../types/higiene';
 import { ControleParasitario } from '../types/controleParasitario';
 import {
-    createControleParasitarioService,
-    deleteControleParasitarioService,
-    getControleParasitariosService,
-    updateControleParasitarioService,
+  createControleParasitarioService,
+  deleteControleParasitarioService,
+  getControleParasitariosService,
+  updateControleParasitarioService,
 } from '../services/controleParasitarios';
 import { Vaccine } from '../types/vaccines';
 import {
-    createVaccineService,
-    deleteVaccineService,
-    getVaccinesService,
-    updateVaccineService,
+  createVaccineService,
+  deleteVaccineService,
+  getVaccinesService,
+  updateVaccineService,
 } from '../services/vaccinesService';
 import { Charts } from '../types/charts';
 import { postChatService } from '../services/chat';
@@ -38,459 +38,510 @@ import { postChatService } from '../services/chat';
 export const PetCareContext = createContext({} as any);
 
 export function ProviderContext({ children }: any) {
-    const [pets, setPets] = useState<any[]>([]);
-    const [user, setUser] = useState<any>({
-        email: '',
-        id: 1,
-        fullname: '',
-        patients: [],
+  const [pets, setPets] = useState<any[]>([]);
+  const [user, setUser] = useState<any>({
+    email: '',
+    id: 1,
+    fullname: '',
+    patients: [],
+  });
+  const [higienes, setHigienes] = useState<Higiene[]>([]);
+  const [controleParasitarios, setControleParasitarios] = useState<
+    ControleParasitario[]
+  >([]);
+  const [vaccines, setVaccines] = useState<Vaccine[]>([]);
+  const [charts, setCharts] = useState<Charts[]>([]);
+
+  const [historyList, setHistoryList] = useState<any>({
+    ...petInit,
+    history: [],
+  });
+  const [snackbarOpen, setSnackbarOpen] = useState<{
+    status: boolean;
+    type: string;
+    message: string;
+  }>({
+    status: false,
+    type: '',
+    message: '',
+  });
+
+  //PETS
+  const getPets = async () => {
+    try {
+      const response = await getPetsService(user.patients.id);
+      setPets(response.data.pets);
+      // setPets([]);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const getPetById = async (id: any) => {
+    try {
+      const response = await getPetByIdService(id);
+      setPets(response.data.pets);
+      // setPets([]);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const createPet = async (petData: any) => {
+    try {
+      petData.userId = user.id;
+      petData.weight = parseFloat(petData.weight);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Sucesso ao cadastrar seu pet :)',
+      });
+      const response = await createPetService(petData);
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos cadastrar seu pet :(',
+      });
+      throw error;
+    }
+  };
+
+  const updatePet = async (petData: any) => {
+    try {
+      petData.weight = parseFloat(petData.weight);
+      const response = await updatePetService(petData);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Sucesso ao alterar seu pet :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos alterar seu pet :(',
+      });
+      throw error;
+    }
+  };
+
+  const deletePet = async (id: any) => {
+    try {
+      const response = await deletePetService(id);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Sucesso ao deletar seu pet',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos deletar seu pet :(',
+      });
+      throw error;
+    }
+  };
+
+  //USER
+  const getUser = async () => {
+    try {
+      const response = await getUserService(user.id);
+      setUser({ ...response.data });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updateUser = async (userData: any) => {
+    try {
+      delete userData.password;
+      delete userData.patients;
+      const response = await updateUserService(userData);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Cadastro alterado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos alterar seu cadastro :(',
+      });
+      throw error;
+    }
+  };
+
+  //HIGIENES
+  const getHigienes = async (petIds: number[]) => {
+    try {
+      const data = [];
+      for await (let id of petIds) {
+        const response = await getHigienesService(id);
+        data.push(...response.data.hygiene);
+      }
+      setHigienes(data);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const createHigiene = async (higieneData: any) => {
+    try {
+      const data = {
+        ...higieneData,
+        petId: parseInt(higieneData.petId, 10),
+      };
+      const response = await createHigieneService(data);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Registro de higiene realizado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos criar este registro de higiene :(',
+      });
+      throw error;
+    }
+  };
+
+  const updateHigiene = async (higieneData: any) => {
+    try {
+      const response = await updateHigieneService(higieneData);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Registro de higiene alterado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos alterar este registro de higiene :(',
+      });
+      throw error;
+    }
+  };
+
+  const deleteHigiene = async (id: any) => {
+    try {
+      const response = await deleteHigieneService(id);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Registro de higiene deletado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos deletar este registro de higiene :(',
+      });
+      throw error;
+    }
+  };
+
+  //CONTROLE PARASITARIOS
+  const getControleParasitarios = async (petIds: number[]) => {
+    try {
+      const data = [];
+      for await (let id of petIds) {
+        const response = await getControleParasitariosService(id);
+        data.push(...response.data.parasiteControl);
+      }
+      setControleParasitarios(data);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const createControleParasitario = async (controleParasitarioData: any) => {
+    try {
+      const data = {
+        ...controleParasitarioData,
+        petId: parseInt(controleParasitarioData.petId, 10),
+      };
+      const response = await createControleParasitarioService(data);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Registro de medicamento realizado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos criar este registro de medicamento :(',
+      });
+      throw error;
+    }
+  };
+
+  const updateControleParasitario = async (controleParasitarioData: any) => {
+    try {
+      const response = await updateControleParasitarioService(
+        controleParasitarioData,
+      );
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Registro de medicamento alterado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos alterar este registro de medicamento :(',
+      });
+      throw error;
+    }
+  };
+
+  const deleteControleParasitario = async (id: any) => {
+    try {
+      const response = await deleteControleParasitarioService(id);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Registro de medicamento deletado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos deletar este registro de medicamento :(',
+      });
+      throw error;
+    }
+  };
+
+  //VACINAS
+  const getVaccines = async (petIds: number[]) => {
+    try {
+      const data = [];
+      for await (let id of petIds) {
+        const response = await getVaccinesService(id);
+        data.push(...response.data.vaccines);
+      }
+      setVaccines(data);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const createVaccine = async (vaccineData: any) => {
+    try {
+      const data = {
+        ...vaccineData,
+        petId: parseInt(vaccineData.petId, 10),
+      };
+      const response = await createVaccineService(data);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Registro de vacina realizado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos criar este registro de vacina :(',
+      });
+      throw error;
+    }
+  };
+
+  const updateVaccine = async (vaccineData: any) => {
+    try {
+      const response = await updateVaccineService(vaccineData);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Registro de vacina alterado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos alterar este registro de vacina :(',
+      });
+      throw error;
+    }
+  };
+
+  const deleteVaccine = async (id: any) => {
+    try {
+      const response = await deleteVaccineService(id);
+      setSnackbarOpen({
+        status: true,
+        type: 'success',
+        message: 'Registro de vacina deletado com sucesso! :)',
+      });
+      return response;
+    } catch (error) {
+      setSnackbarOpen({
+        status: true,
+        type: 'error',
+        message: 'Nós não conseguimos deletar este registro de vacina :(',
+      });
+      throw error;
+    }
+  };
+
+  // PRONTURÁRIOS
+  const getCharts = async (petIds: number[]) => {
+    try {
+      const data = [];
+      for await (let id of petIds) {
+        const response = await getChartsService(id);
+        data.push(...response.data.patientMedicalRecord);
+      }
+      setCharts(data);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const postChat = async (chatData: any) => {
+    try {
+      const respose = await postChatService(chatData);
+      return respose;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const getPetPdf = async (petData: Pet) => {
+    try {
+      const response = await getPetPdfService(petData.id);
+      const url = URL.createObjectURL(response.data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${petData.name}-relatorio.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Erro ao baixar o PDF:', error);
+    }
+  };
+
+  const normalizeDate = (array: any) =>
+    array.map((item: any) => {
+      if (item.consultationDate) {
+        item.displayDate = item.consultationDate;
+      }
+      if (item.dateAdministered) {
+        item.displayDate = item.dateAdministered;
+      }
+      if (item.controlDate) {
+        item.displayDate = item.controlDate;
+      }
+      if (item.serviceDate) {
+        item.displayDate = item.serviceDate;
+      }
+
+      delete item.id;
+      delete item.patientId;
+      delete item.createdAt;
+      return item;
     });
-    const [higienes, setHigienes] = useState<Higiene[]>([]);
-    const [controleParasitarios, setControleParasitarios] = useState<
-        ControleParasitario[]
-    >([]);
-    const [vaccines, setVaccines] = useState<Vaccine[]>([]);
-    const [charts, setCharts] = useState<Charts[]>([]);
+  const getHistory = async (id: number) => {
+    try {
+      const response = await getPetByIdService(id);
+      const normalizedMedicalRecord = normalizeDate(
+        response.data.patientMedicalRecord,
+      );
+      const normalizedVaccines = normalizeDate(response.data.vaccines);
+      const normalizedParasiteControl = normalizeDate(
+        response.data.parasiteControl,
+      );
+      const normalizedHygiene = normalizeDate(response.data.hygiene);
 
-    const [snackbarOpen, setSnackbarOpen] = useState<{
-        status: boolean;
-        type: string;
-        message: string;
-    }>({
-        status: false,
-        type: '',
-        message: '',
-    });
+      const history = [
+        ...normalizedMedicalRecord,
+        ...normalizedVaccines,
+        ...normalizedParasiteControl,
+        ...normalizedHygiene,
+      ];
 
-    //PETS
-    const getPets = async () => {
-        try {
-            const response = await getPetsService(user.patients.id);
-            setPets(response.data.pets);
-            // setPets([]);
-        } catch (error) {
-            throw error;
-        }
-    };
+      response.data.history = history.sort(
+        (a, b) => a.displayDate - b.displayDate,
+      );
 
-    const getPetById = async (id: any) => {
-        try {
-            const response = await getPetByIdService(id);
-            setPets(response.data.pets);
-            // setPets([]);
-        } catch (error) {
-            throw error;
-        }
-    };
+      delete response.data.patientMedicalRecord;
+      delete response.data.vaccines;
+      delete response.data.parasiteControl;
+      delete response.data.hygiene;
+      setHistoryList(response.data);
+    } catch (e) {
+      console.log('e', e);
+    }
+  };
 
-    const createPet = async (petData: any) => {
-        try {
-            petData.userId = user.id;
-            petData.weight = parseFloat(petData.weight);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Sucesso ao cadastrar seu pet :)',
-            });
-            const response = await createPetService(petData);
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message: 'Nós não conseguimos cadastrar seu pet :(',
-            });
-            throw error;
-        }
-    };
+  const states = {
+    pets,
+    user,
+    higienes,
+    controleParasitarios,
+    snackbarOpen,
+    vaccines,
+    charts,
+    historyList,
+  };
 
-    const updatePet = async (petData: any) => {
-        try {
-            petData.weight = parseFloat(petData.weight);
-            const response = await updatePetService(petData);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Sucesso ao alterar seu pet :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message: 'Nós não conseguimos alterar seu pet :(',
-            });
-            throw error;
-        }
-    };
+  const actions = {
+    getPets,
+    createPet,
+    setUser,
+    updatePet,
+    deletePet,
+    getUser,
+    updateUser,
+    getHigienes,
+    createHigiene,
+    setHigienes,
+    updateHigiene,
+    deleteHigiene,
+    getControleParasitarios,
+    createControleParasitario,
+    updateControleParasitario,
+    deleteControleParasitario,
+    setSnackbarOpen,
+    getPetPdf,
+    setVaccines,
+    getVaccines,
+    createVaccine,
+    updateVaccine,
+    deleteVaccine,
+    getPetById,
+    getCharts,
+    postChat,
+    getHistory,
+  };
 
-    const deletePet = async (id: any) => {
-        try {
-            const response = await deletePetService(id);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Sucesso ao deletar seu pet',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message: 'Nós não conseguimos deletar seu pet :(',
-            });
-            throw error;
-        }
-    };
-
-    //USER
-    const getUser = async () => {
-        try {
-            const response = await getUserService(user.id);
-            setUser({ ...response.data });
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const updateUser = async (userData: any) => {
-        try {
-            delete userData.password;
-            delete userData.patients;
-            const response = await updateUserService(userData);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Cadastro alterado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message: 'Nós não conseguimos alterar seu cadastro :(',
-            });
-            throw error;
-        }
-    };
-
-    //HIGIENES
-    const getHigienes = async (petIds: number[]) => {
-        try {
-            const data = [];
-            for await (let id of petIds) {
-                const response = await getHigienesService(id);
-                data.push(...response.data.hygiene);
-            }
-            setHigienes(data);
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const createHigiene = async (higieneData: any) => {
-        try {
-            const data = {
-                ...higieneData,
-                petId: parseInt(higieneData.petId, 10),
-            };
-            const response = await createHigieneService(data);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Registro de higiene realizado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message:
-                    'Nós não conseguimos criar este registro de higiene :(',
-            });
-            throw error;
-        }
-    };
-
-    const updateHigiene = async (higieneData: any) => {
-        try {
-            const response = await updateHigieneService(higieneData);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Registro de higiene alterado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message:
-                    'Nós não conseguimos alterar este registro de higiene :(',
-            });
-            throw error;
-        }
-    };
-
-    const deleteHigiene = async (id: any) => {
-        try {
-            const response = await deleteHigieneService(id);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Registro de higiene deletado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message:
-                    'Nós não conseguimos deletar este registro de higiene :(',
-            });
-            throw error;
-        }
-    };
-
-    //CONTROLE PARASITARIOS
-    const getControleParasitarios = async (petIds: number[]) => {
-        try {
-            const data = [];
-            for await (let id of petIds) {
-                const response = await getControleParasitariosService(id);
-                data.push(...response.data.parasiteControl);
-            }
-            setControleParasitarios(data);
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const createControleParasitario = async (controleParasitarioData: any) => {
-        try {
-            const data = {
-                ...controleParasitarioData,
-                petId: parseInt(controleParasitarioData.petId, 10),
-            };
-            const response = await createControleParasitarioService(data);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Registro de medicamento realizado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message:
-                    'Nós não conseguimos criar este registro de medicamento :(',
-            });
-            throw error;
-        }
-    };
-
-    const updateControleParasitario = async (controleParasitarioData: any) => {
-        try {
-            const response = await updateControleParasitarioService(
-                controleParasitarioData,
-            );
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Registro de medicamento alterado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message:
-                    'Nós não conseguimos alterar este registro de medicamento :(',
-            });
-            throw error;
-        }
-    };
-
-    const deleteControleParasitario = async (id: any) => {
-        try {
-            const response = await deleteControleParasitarioService(id);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Registro de medicamento deletado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message:
-                    'Nós não conseguimos deletar este registro de medicamento :(',
-            });
-            throw error;
-        }
-    };
-
-    //VACINAS
-    const getVaccines = async (petIds: number[]) => {
-        try {
-            const data = [];
-            for await (let id of petIds) {
-                const response = await getVaccinesService(id);
-                data.push(...response.data.vaccines);
-            }
-            setVaccines(data);
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const createVaccine = async (vaccineData: any) => {
-        try {
-            const data = {
-                ...vaccineData,
-                petId: parseInt(vaccineData.petId, 10),
-            };
-            const response = await createVaccineService(data);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Registro de vacina realizado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message: 'Nós não conseguimos criar este registro de vacina :(',
-            });
-            throw error;
-        }
-    };
-
-    const updateVaccine = async (vaccineData: any) => {
-        try {
-            const response = await updateVaccineService(vaccineData);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Registro de vacina alterado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message:
-                    'Nós não conseguimos alterar este registro de vacina :(',
-            });
-            throw error;
-        }
-    };
-
-    const deleteVaccine = async (id: any) => {
-        try {
-            const response = await deleteVaccineService(id);
-            setSnackbarOpen({
-                status: true,
-                type: 'success',
-                message: 'Registro de vacina deletado com sucesso! :)',
-            });
-            return response;
-        } catch (error) {
-            setSnackbarOpen({
-                status: true,
-                type: 'error',
-                message:
-                    'Nós não conseguimos deletar este registro de vacina :(',
-            });
-            throw error;
-        }
-    };
-
-    // PRONTURÁRIOS
-    const getCharts = async (petIds: number[]) => {
-        try {
-            const data = [];
-            for await (let id of petIds) {
-                const response = await getChartsService(id);
-                data.push(...response.data.patientMedicalRecord);
-            }
-            setCharts(data);
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const postChat = async (chatData: any) => {
-        try {
-            const respose = await postChatService(chatData);
-            return respose;
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const getPetPdf = async (petData: Pet) => {
-        try {
-            const response = await getPetPdfService(petData.id);
-            const url = URL.createObjectURL(response.data);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `${petData.name}-relatorio.pdf`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (error) {
-            console.error('Erro ao baixar o PDF:', error);
-        }
-    };
-
-    const states = {
-        pets,
-        user,
-        higienes,
-        controleParasitarios,
-        snackbarOpen,
-        vaccines,
-        charts,
-    };
-
-    const actions = {
-        getPets,
-        createPet,
-        setUser,
-        updatePet,
-        deletePet,
-        getUser,
-        updateUser,
-        getHigienes,
-        createHigiene,
-        setHigienes,
-        updateHigiene,
-        deleteHigiene,
-        getControleParasitarios,
-        createControleParasitario,
-        updateControleParasitario,
-        deleteControleParasitario,
-        setSnackbarOpen,
-        getPetPdf,
-        setVaccines,
-        getVaccines,
-        createVaccine,
-        updateVaccine,
-        deleteVaccine,
-        getPetById,
-        getCharts,
-        postChat,
-    };
-
-    return (
-        <PetCareContext.Provider value={{ ...states, ...actions }}>
-            {children}
-        </PetCareContext.Provider>
-    );
+  return (
+    <PetCareContext.Provider value={{ ...states, ...actions }}>
+      {children}
+    </PetCareContext.Provider>
+  );
 }
 
 export const usePetCareContext = () => useContext(PetCareContext);
